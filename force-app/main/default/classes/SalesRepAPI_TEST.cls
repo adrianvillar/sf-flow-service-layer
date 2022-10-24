@@ -11,11 +11,12 @@ private class SalesRepAPI_TEST {
         
         Test.startTest();
         // Call the method to test
-        Id salesRepId = SalesRepAPI.getSalesRep();
+        String salesRepId = SalesRepAPI.getSalesRep();
         Test.stopTest();
         
         // Verify results
         Assert.isNotNull(salesRepId, 'Class ID');
+        Assert.isNotNull(Id.valueOf(salesRepId), 'IDability');
         // Note:  Apex unit tests can't validate the contents of RestResponse-typed objects, so don't bother checking for statusCode 200, a body that matches "salesRepID," etc.
         // This hack is about the closest we can get to using a unit test to make sure that the SalesRepAPI is truly accepting HTTP parameters.
         Assert.areEqual('Japan', SalesRepAPI.unitTestHelperCountry);

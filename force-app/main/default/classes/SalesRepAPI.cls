@@ -7,7 +7,7 @@
 global with sharing class SalesRepAPI {
     @TestVisible private static String unitTestHelperCountry;
     @HttpGet
-    global static Id getSalesRep() {
+    global static String getSalesRep() {
         RestRequest req = RestContext.request;
         String paramCountry = req.params.get('country');
         unitTestHelperCountry = paramCountry;
@@ -21,6 +21,6 @@ global with sharing class SalesRepAPI {
         );
         flw.start();
         User u = (User) flw.getVariableValue('Sales_Rep_User');
-        return u.Id;
+        return String.valueOf(u.Id);
     }
 }
