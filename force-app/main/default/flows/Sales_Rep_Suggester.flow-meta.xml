@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <decisions>
+        <description>Split first-time customers by region</description>
+        <name>First_time_geographic_assignment</name>
+        <label>First-time geographic assignment</label>
+        <locationX>314</locationX>
+        <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Get_sales_rep_user_for_first_time_other</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>All other regions</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_first_time_APAC_LATAM</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Country_to_Region</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>APAC</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Country_to_Region</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>LATAM</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_sales_rep_user_for_first_time_APAC_LATAM</targetReference>
+            </connector>
+            <label>APAC/LATAM</label>
+        </rules>
+        <rules>
+            <name>Outcome_first_time_EMEA</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Country_to_Region</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>EMEA</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_sales_rep_user_for_first_time_EMEA</targetReference>
+            </connector>
+            <label>EMEA</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Is this a first-time customer or a returning customer?</description>
+        <name>First_time_vs_return</name>
+        <label>First-time vs. return</label>
+        <locationX>710</locationX>
+        <locationY>158</locationY>
+        <defaultConnector>
+            <targetReference>Returning_geographic_assignment</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Returning customer</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_first_time_customer_true</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>First_Time_Customer</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>First_time_geographic_assignment</targetReference>
+            </connector>
+            <label>First-time customer</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Split returning customers by region</description>
+        <name>Returning_geographic_assignment</name>
+        <label>Returning geographic assignment</label>
+        <locationX>1106</locationX>
+        <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Retrn_EMEA_other_rep</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>EMEA and all other regions</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_returning_LATAM</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Country_to_Region</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>LATAM</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_sales_rep_user_for_returning_LATAM</targetReference>
+            </connector>
+            <label>LATAM</label>
+        </rules>
+        <rules>
+            <name>Outcome_returning_APAC</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Country_to_Region</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>APAC</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_sales_rep_user_for_returning_APAC</targetReference>
+            </connector>
+            <label>APAC</label>
+        </rules>
+    </decisions>
+    <description>Input:  2 strings (a country and a first-time vs. returning).  Output:  1 User-typed record.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Get a global region from a country name</description>
+        <name>Country_to_Region</name>
+        <dataType>String</dataType>
+        <expression>CASE({!Country_of_Residence}, &apos;Japan&apos;, &apos;APAC&apos;, &apos;Kenya&apos;, &apos;EMEA&apos;, &apos;Montserrat&apos;, &apos;LATAM&apos;, &apos;NOT_FOUND&apos;)</expression>
+    </formulas>
+    <interviewLabel>Sales Rep Suggester {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Sales Rep Suggester</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Get sales rep user for APAC/LATAM first-time customers</description>
+        <name>Get_sales_rep_user_for_first_time_APAC_LATAM</name>
+        <label>FT APAC/LATAM rep</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Get sales rep user for EMEA first-time customers</description>
+        <name>Get_sales_rep_user_for_first_time_EMEA</name>
+        <label>FT EMEA rep</label>
+        <locationX>314</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Get sales rep user for other-region first-time customers</description>
+        <name>Get_sales_rep_user_for_first_time_other</name>
+        <label>FT other-region rep</label>
+        <locationX>578</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Get sales rep user for APAC returning customers</description>
+        <name>Get_sales_rep_user_for_returning_APAC</name>
+        <label>Rtng APAC rep</label>
+        <locationX>1106</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Get sales rep user for LATAM returning customers</description>
+        <name>Get_sales_rep_user_for_returning_LATAM</name>
+        <label>Rtng LATAM rep</label>
+        <locationX>842</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <description>Get sales rep user for EMEA / other-region returning customers</description>
+        <name>Retrn_EMEA_other_rep</name>
+        <label>Rtng EMEA/other-region rep</label>
+        <locationX>1370</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <object>User</object>
+        <outputReference>Sales_Rep_User</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <start>
+        <locationX>584</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>First_time_vs_return</targetReference>
+        </connector>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <description>Where does the person needing service live?</description>
+        <name>Country_of_Residence</name>
+        <dataType>Picklist</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Is this a first-time customer?  (Leave unchecked for returning customers.)</description>
+        <name>First_Time_Customer</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <description>The user record representing the sales rep our customer needs to work with</description>
+        <name>Sales_Rep_User</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>User</objectType>
+    </variables>
+</Flow>
