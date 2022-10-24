@@ -1,0 +1,11 @@
+{
+  "orgName": "Flow service layer demo - Dev Org",
+  "edition": "Developer",
+  "settings": {
+    "securitySettings": {
+      "sessionSettings": {
+        "forceRelogin": false
+      }
+    }
+  }
+}

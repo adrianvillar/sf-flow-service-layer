@@ -1,0 +1,11 @@
+{
+  "orgName": "Flow service layer demo - Release Test Org",
+  "edition": "Enterprise",
+  "settings": {
+    "securitySettings": {
+      "sessionSettings": {
+        "forceRelogin": false
+      }
+    }
+  }
+}

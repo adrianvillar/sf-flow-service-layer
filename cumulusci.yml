@@ -1,0 +1,7 @@
+project:
+  name: flow-service-layer-demo
+  package:
+    name: Flow service layer demo
+  git:
+    default_branch: 'main'
+  source_format: sfdx
