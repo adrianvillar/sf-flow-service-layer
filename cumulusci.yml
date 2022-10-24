@@ -5,3 +5,17 @@ project:
   git:
     default_branch: 'main'
   source_format: sfdx
+
+# Not sure if I got this auto-running upon scratch org creation, but to validate HTTP endpoint, run:
+# "cci task run robot --org scratch_org_cci_alias_here"
+# (substituting alias as appropriate)
+tasks:
+    robot:
+        options:
+            suites: robot/flow-service-layer-demo/tests
+            options:
+                outputdir: robot/flow-service-layer-demo/results
+
+    run_tests:
+        options:
+            required_org_code_coverage_percent: 75

@@ -11,6 +11,9 @@ __pycache__
 
 # Robot Framework results
 robot/flow-service-layer-demo/results/
+log.html
+output.xml
+report.html
 
 # Salesforce cache
 .sf/
