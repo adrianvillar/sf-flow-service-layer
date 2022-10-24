@@ -1,11 +1,18 @@
 {
   "orgName": "Flow service layer demo - Release Test Org",
   "edition": "Enterprise",
+  "features": [
+    "Communities",
+    "Sites"
+  ],
   "settings": {
     "securitySettings": {
       "sessionSettings": {
         "forceRelogin": false
       }
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
     }
   }
 }
