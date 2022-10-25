@@ -25,7 +25,7 @@ private class SalesRepAPI_TEST {
 
     // Failed attempt to surface 500-error from Apex
     @isTest static void testUnauthenticatedGet() {
-        String sitebaseurl = URL.getSalesforceBaseUrl().toExternalForm().replace('salesforce', 'salesforce-sites');
+        String sitebaseurl = URL.getSalesforceBaseUrl().toExternalForm().replace('salesforce', 'site');
         // Set up a test request
         RestRequest req = new RestRequest();
         req.requestUri = sitebaseurl + '/services/apexrest/get_sales_rep/';

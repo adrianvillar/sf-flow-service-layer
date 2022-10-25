@@ -1,21 +1,49 @@
+# TODO:  Update this project to have meaningful branching in the flow.
+# TODO:  Update this project to return better data in the API endpoint than a "005" ID.
+#         (First & last name, for example.)
+
 project:
   name: flow-service-layer-demo
   package:
     name: Flow service layer demo
   git:
-    default_branch: 'main'
+    default_branch: "main"
   source_format: sfdx
 
-# Not sure if I got this auto-running upon scratch org creation, but to validate HTTP endpoint, run:
-# "cci task run robot --org scratch_org_cci_alias_here"
-# (substituting alias as appropriate)
 tasks:
-    robot:
-        options:
-            suites: robot/flow-service-layer-demo/tests
-            options:
-                outputdir: robot/flow-service-layer-demo/results
+  robot:
+    options:
+      suites: robot/flow-service-layer-demo/tests
+      options:
+        outputdir: robot/flow-service-layer-demo/results
 
-    run_tests:
-        options:
-            required_org_code_coverage_percent: 75
+  run_tests:
+    options:
+      required_org_code_coverage_percent: 75
+
+  create_community:
+    options:
+      name: "Public APIs"
+      description: "A place to stash miscellaneous public APIs"
+      template: "Build Your Own"
+      url_path_prefix: "publicapis"
+      skip_existing: True
+
+  enable_sales_rep_api_class_on_public_apis_profile:
+    description: 'Exposes "Sales Rep API" Apex class to permission set underlying "Public APIs Profile"'
+    class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+    options:
+      path: scripts/setup.cls
+      apex: enable_sales_rep_api_class_on_public_apis_profile();
+
+flows:
+  config_dev:
+    steps:
+      3:
+        task: create_community
+      4:
+        task: enable_sales_rep_api_class_on_public_apis_profile
+      5:
+        task: robot
+      6:
+        task: run_tests

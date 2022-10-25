@@ -68,7 +68,7 @@ Create Request
   ...              |   body         |   request body   |
   [Arguments]                   ${method}                  ${access_token}                         ${base_url}                             ${body}
   Check For Access Token        ${access_token}
-  ${better_url} =               Replace String             ${INSTANCE_URL}                         salesforce                              salesforce-sites
+  ${better_url} =               Replace String             ${INSTANCE_URL}                         salesforce                              site
   Create Session                Baseurl                    ${better_url}
   ${response}=                  Run Keyword                ${method}                               Baseurl
   ...                           ${base_url}                data=${body}
