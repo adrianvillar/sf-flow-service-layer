@@ -43,7 +43,7 @@
             <targetReference>Get_suggested_owner_user</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <subflows>
         <name>Get_suggested_owner_user</name>
         <label>Get suggested owner user</label>
