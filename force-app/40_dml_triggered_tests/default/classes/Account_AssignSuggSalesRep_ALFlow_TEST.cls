@@ -27,12 +27,19 @@ private class Account_AssignSuggSalesRep_ALFlow_TEST {
         Test.stopTest();
         
         List<Account> acctsOutput = (List<Account>) flw.getVariableValue('altered_records');
-        Assert.isNotNull(acctsOutput, 'Flow returned null output');
-        Assert.areNotEqual(0, acctsOutput.size(), 'No accts after - list');
+        Assert.isNotNull(acctsOutput, 'Flow returned null output1');
+        Assert.areNotEqual(0, acctsOutput.size(), 'No accts after - list, 1');
+        List<Account> acctsOutput2 = (List<Account>) flw.getVariableValue('record');
+        Assert.isNotNull(acctsOutput2, 'Flow returned null output2');
+        Assert.areNotEqual(0, acctsOutput2.size(), 'No accts after - list, 1');
  
         for ( Account acct : acctsOutput ) {
             Assert.isNotNull(acct.OwnerId, acct.Name);
-            Assert.areNotEqual(dummyUser.Id, acct.OwnerId, acct.Name);
+            Assert.areNotEqual(dummyUser.Id, acct.OwnerId, 'test1 ~ ' + acct.Name);
+        }
+        for ( Account acct : acctsOutput2 ) {
+            Assert.isNotNull(acct.OwnerId, acct.Name);
+            Assert.areNotEqual(dummyUser.Id, acct.OwnerId, 'test2 ~ ' + acct.Name);
         }
     }
     

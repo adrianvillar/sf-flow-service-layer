@@ -111,7 +111,7 @@
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>
-        <isOutput>false</isOutput>
+        <isOutput>true</isOutput>
         <objectType>Account</objectType>
     </variables>
 </Flow>
