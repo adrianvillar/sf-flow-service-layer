@@ -9,6 +9,8 @@ project:
   git:
     default_branch: "main"
   source_format: sfdx
+  dependencies:
+    - version_id: "04t3h000004VaHaAAK" # Trigger actions framework https://github.com/mitchspano/apex-trigger-actions-framework
 
 tasks:
   robot:
