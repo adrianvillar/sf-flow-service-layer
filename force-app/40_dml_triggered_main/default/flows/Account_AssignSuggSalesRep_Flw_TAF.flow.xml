@@ -2,51 +2,21 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>56.0</apiVersion>
     <assignments>
-        <name>Add_record_to_altered_records</name>
-        <label>Add record to altered records</label>
-        <locationX>264</locationX>
-        <locationY>518</locationY>
+        <name>Assign_suggested_user_ID_as_record_owner_ID</name>
+        <label>Assign suggested user ID as record owner ID</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
         <assignmentItems>
-            <assignToReference>altered_records</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>Loop_over_input_records</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Loop_over_input_records</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_Owner_ID_to_output_user_ID</name>
-        <label>Set Owner ID to output user ID</label>
-        <locationX>264</locationX>
-        <locationY>398</locationY>
-        <assignmentItems>
-            <assignToReference>Loop_over_input_records.OwnerId</assignToReference>
+            <assignToReference>record.OwnerId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Suggest_Owner_User.Sales_Rep_User.Id</elementReference>
+                <elementReference>Get_suggested_owner_user.Sales_Rep_User.Id</elementReference>
             </value>
         </assignmentItems>
-        <connector>
-            <targetReference>Add_record_to_altered_records</targetReference>
-        </connector>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>Account Assign Sugg Sales Rep Flow (TAF) {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Account Assign Sugg Sales Rep Flow (TAF)</label>
-    <loops>
-        <name>Loop_over_input_records</name>
-        <label>Loop over input records</label>
-        <locationX>176</locationX>
-        <locationY>158</locationY>
-        <collectionReference>record</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Suggest_Owner_User</targetReference>
-        </nextValueConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -70,23 +40,23 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Loop_over_input_records</targetReference>
+            <targetReference>Get_suggested_owner_user</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <subflows>
-        <name>Suggest_Owner_User</name>
-        <label>Suggest owner user</label>
-        <locationX>264</locationX>
-        <locationY>278</locationY>
+        <name>Get_suggested_owner_user</name>
+        <label>Get suggested owner user</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
         <connector>
-            <targetReference>Set_Owner_ID_to_output_user_ID</targetReference>
+            <targetReference>Assign_suggested_user_ID_as_record_owner_ID</targetReference>
         </connector>
         <flowName>Sales_Rep_Suggester</flowName>
         <inputAssignments>
             <name>Country_of_Residence</name>
             <value>
-                <elementReference>Loop_over_input_records.BillingCountry</elementReference>
+                <elementReference>record.BillingCountry</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -98,18 +68,9 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </subflows>
     <variables>
-        <name>altered_records</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>true</isOutput>
-        <objectType>Account</objectType>
-    </variables>
-    <variables>
-        <description>Inbound account record (TAF seems to dictate that it be literally named &quot;record&quot;)</description>
         <name>record</name>
         <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
+        <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>true</isOutput>
         <objectType>Account</objectType>
