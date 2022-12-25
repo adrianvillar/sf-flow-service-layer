@@ -7,13 +7,13 @@ See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-servi
     * The record-triggered flow labeled "**Account Assign Sugg Sales Rep Flow (TAF)**," which lives in "`/force-app/40_dml_triggered_main`" in this codebase.
         * _(Technically it's not a typical Salesforce record-triggered flow.  Technically it's also yet another Autolaunched Flow, and it's called by the "**AccountTrigger_TAF**" trigger and the "**TAF SAO Account**" custom metadata entry the "**TAF Account Assign Sugg Sales Rep FlwBI** custom metadata entry.)_
 
-**Project idea:**  Enhance this codebase by adding some extra users to the scratch org and making the "**Sales Rep Suggester**" Flow more complex about which countries go to which sales rep.  Edit some Account records and validate that your changes take effect _(that `OwnerId` gets assigned correctly)_.
+**Project idea:**  Enhance this codebase by adding some extra users to the scratch org and making the "**Sales Rep Suggester**" Flow more complex about which countries go to which sales rep.  Edit some Account records and validate that your changes take effect _(that `OwnerId` gets assigned correctly)_.  You can do so by opening a scratch org based on this codebase and editing the Flow in your web browser, just like administering any other Salesforce org.
 
-**Project idea:**  Enhance this codebase by adding another Autolaunched Flow labeled "**Contact Assign Sugg Sales Rep Flow (TAF)**," being sure to also add a "**TAF SAO Contact**" custom metadata entry and a "**TAF Contact Assign Sugg Sales Rep FlwBI** custom metadata entry.  Don't forget you'll have to change the new Flow to work with a `MailingCountry` instead of a `BillingCountry`.  Edit some Contact records and validate that your changes take effect _(that `OwnerId` gets assigned correctly based on the logic in "**Sales Rep Suggester**")_.
+**Project idea:**  Enhance this codebase by adding another Autolaunched Flow labeled "**Contact Assign Sugg Sales Rep Flow (TAF)**," being sure to also add a "**TAF SAO Contact**" custom metadata entry and a "**TAF Contact Assign Sugg Sales Rep FlwBI** custom metadata entry.  Don't forget you'll have to change the new Flow to work with a `MailingCountry` instead of a `BillingCountry`.  Edit some Contact records and validate that your changes take effect _(that `OwnerId` gets assigned correctly based on the logic in "**Sales Rep Suggester**")_.  You can do so by opening a scratch org based on this codebase and editing the Flow and Custom Metadata in your web browser, just like administering any other Salesforce org.
 
 ---
 
-## How to create a scratch org from this codebase using CumulusCI:
+## How to create a scratch org from this codebase using the CumulusCI command-line tool:
 
 1. Download a copy of this codebase to your computer.
 2. With your computer's command prompt set to the folder into which you downloaded this codebase, run the following CumulusCI command-line command to create a scratch org:
@@ -76,9 +76,9 @@ See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-servi
         ```
         * _(If you want to open the scratch org in a specific browser, add "` -b chrome`," "` -b firefox`," etc. to the end of the command.)_
         * _(Alternatively, add "` -r`" to the end of the command and, after running it, and copy the URL to your clipboard from the command-line output.)_
-4. To see the public API in action, if the URL your browser opened _(or the URL that "` --url-only`" or "` -r`" put into the command line)_ looks like "`https://12345.scratch.lightning.force.com/...`" or "`https://12345.scratch.my.salesforce.com/...`," make note of what actually appears in your URLs instead of "`12345`" and then visit this URL, of course replacing "`12345`" with your value from your scratch org:
+4. To see the public API in action, if the URL your browser opened _(or the URL that "` --url-only`" or "` -r`" put into the command line)_ looks like "`https://12345.scratch.lightning.force.com/...`" or "`https://12345.scratch.my.salesforce.com/...`," make note of what actually appears in your URLs instead of "`12345`" and then visit this URL, of course replacing "`12345`" with your value from your scratch org _(note that it's "`site.com`" not "`salesforce.com`")_:
     ```
-    https://12345.scratch.my.site.com/services/apexrest/get_sales_rep`
+    https://12345.scratch.my.site.com/services/apexrest/get_sales_rep
     ```
     * **Validate** that the contents of this website look something like this _(should contain a Salesforce user ID starting with "`005`")_:
         ```xml
@@ -89,6 +89,103 @@ See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-servi
 5. If you get stuck and need to delete your scratch org and start over, run the following CumulusCI command:
     ```sh
     cci org remove --org feature
+    ```
+
+---
+
+## How to create a scratch org from this codebase using the SFDX command-line tool:
+
+1. Download a copy of this codebase to your computer.
+2. With your computer's command prompt set to the folder into which you downloaded this codebase, run the following SFDX command-line command to create a scratch org _(you may change the scratch org's command-line "**alias**" from "`sfdxstyle`" to anything you'd like -- just be sure to also do so in the additional commands in these instructions)_:
+    ```sh
+    sfdx force:org:create -f ./orgs/sfdxstyle.json --setalias sfdxstyle --durationdays 1 --json --loglevel fatal
+    ```
+    * It should take a couple of minutes to set up, and you should see the following things occur in the output of running this command:
+        ```json
+        {
+        "status": 0,
+        "result": {
+            "username": "scratch-org-username@example.com",
+            ...
+            "orgId": "00D123456789123"
+        }
+        }
+        ```
+3. Install Mitch Spano's [Trigger Actions Framework](https://github.com/mitchspano/apex-trigger-actions-framework) package into the scratch org with the following SFDX command:
+    ```sh
+    sfdx force:package:beta:install -u sfdxstyle --package 04t3h000004VaHaAAK
+    ```
+4. Wait about 1 minute, then install the most interesting part of this codebase into the scratch org with the following SFDX command:
+    ```sh
+    sf deploy metadata --target-org sfdxstyle --source-dir ./force-app/ 
+    ```
+    * If it doesn't work, **wait** another minute or two for Trigger Actions Framework to finish installing and **try again**.  Failure due to Trigger Actions Framework not existing yet typically looks like this command-line output:
+        ```
+        Status: Failed | ████████████████████████████████████████ | 14/14 Components
+
+        Component Failures [3]
+        =======================================================================================================================================================
+        | Type  Name                                                   Problem
+        | ───── ────────────────────────────────────────────────────── ──────────────────────────────────────────────────────────────────────────────────────── 
+        | Error Trigger_Action.TAF_Account_Assign_Sugg_Sales_Rep_ApxBI Custom metadata type Trigger_Action__mdt is not available in this organization.
+        | Error Trigger_Action.TAF_Account_Assign_Sugg_Sales_Rep_FlwBI Custom metadata type Trigger_Action__mdt is not available in this organization.
+        | Error sObject_Trigger_Setting.tafsao_Account                 Custom metadata type sObject_Trigger_Setting__mdt is not available in this organization.
+        ```
+5. Enable the scratch org to host public APIs with either of these SFDX commands _(just choose one)_:
+    * Either this one _(after which you might need to wait a few minutes before the subsequent `force:apex:execute` command will run with correct output)_:
+        ```sh
+        sfdx force:community:create -u sfdxstyle -n "Public APIs" -d "A place to stash miscellaneous public APIs" -p "publicapis" -t  "Build Your Own"
+        ```
+    * Or this one:
+        ```sh
+        sf deploy metadata --target-org sfdxstyle --source-dir ./force-app-sfdx-manual-only/ 
+        ```
+6. Associate code from the most interesting part of this codebase with the public API you just created with the following SFDX command:
+    ```sh
+    sfdx force:apex:execute -u sfdxstyle -f ./scripts/setup.cls
+    ```
+    * The output should look someting like this _(please **validate** that there are 3 SOQL queries w/ 2 rows, and 1 DML statement with 1 row)_:
+        ```
+        ...
+        10:27:26.528 (528164996)|LIMIT_USAGE_FOR_NS|(default)|
+          Number of SOQL queries: 3 out of 100
+          Number of query rows: 2 out of 50000
+          ...
+          Number of DML statements: 1 out of 150
+          ...
+        Number of DML rows: 1 out of 10000
+        ...
+        ```
+    * If the output looks more like this, with just 1 query and 0 for all other values, you probably tried to create a community with `force:community:create` and it simply isn't done yet.  Try the `force:apex:execute` command again in a few minutes.
+        ```
+        10:39:13.265 (265244398)|LIMIT_USAGE_FOR_NS|(default)|
+          Number of SOQL queries: 1 out of 100
+          Number of query rows: 0 out of 50000
+          ...
+          Number of DML statements: 0 out of 150
+          ...
+          Number of DML rows: 0 out of 10000
+        ...
+        ```
+7. If you'd like to poke around and see what's in this scratch org, open the scratch org in the browser with the following SFDX command:
+    ```sh
+    sfdx force:org:open -u sfdxstyle
+    ```
+    * _(If you want to open the scratch org in a specific browser, add "` -b chrome`," "` -b firefox`," etc. to the end of the command.)_
+    * _(Alternatively, add "` -r`" to the end of the command and, after running it, and copy the URL to your clipboard from the command-line output.)_
+8. To see the public API in action, if the URL your browser opened _(or the URL that "` -r`" put into the command line)_ looks like "`https://12345.scratch.lightning.force.com/...`" or "`https://12345.scratch.my.salesforce.com/...`," make note of what actually appears in your URLs instead of "`12345`" and then visit this URL, of course replacing "`12345`" with your value from your scratch org:
+    ```
+    https://12345.scratch.my.site.com/services/apexrest/get_sales_rep
+    ```
+    * **Validate** that the contents of this website look something like this _(should contain a Salesforce user ID starting with "`005`")_:
+        ```xml
+        <response>005987123654456987</response>
+        ```
+    * Note that you shouldn't even need to open this URL in the same browser that's already logged into your scratch org -- theoretically, you could visit it from a totally different browser in incognito mode and it would work, because it's a _**publicly available**_ URL for an "API" included with this codebase.
+        * In fact, please **validate** that this is the case!
+9. If you get stuck and need to delete your scratch org and start over, run the following SFDX command:
+    ```sh
+    sfdx force:org:delete -u sfdxstyle
     ```
 
 ---

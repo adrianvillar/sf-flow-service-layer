@@ -1,0 +1,21 @@
+{
+  "orgName": "Flow service layer demo - Feature Test Org",
+  "edition": "Developer",
+  "features": [
+    "Communities",
+    "Sites"
+  ],
+  "settings": {
+    "securitySettings": {
+      "sessionSettings": {
+        "forceRelogin": false
+      }
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    }
+  }
+}
