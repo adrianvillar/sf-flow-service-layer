@@ -1,3 +1,14 @@
+## What's in this codebase
+
+See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-service-layer-principles/)" for the reason this codebase exists.
+
+* The Autolaunched Flow labeled "**Sales Rep Suggester**," which lives in "`/force-app/00_shared_subflow_main`" in this codebase, is used by both:
+    * The "[build your own API endpoint inside of Salesforce](https://katiekodes.com/introduction-salesforce-rest-apis/#1--build-your-own-endpoint-inside-salesforce)" API endpoint supported by the Apex class "**SalesRepAPI**," which lives in "`/force-app/20_rest_api_main`" in this codebase.
+    * The record-triggered flow labeled "**Account Assign Sugg Sales Rep Flow (TAF)**," which lives in "`/force-app/40_dml_triggered_main`" in this codebase.
+        * _(Technically it's not a typical Salesforce record-triggered flow.  Technically it's also yet another Autolaunched Flow, and it's called by the "**AccountTrigger_TAF**" trigger and and the "**TAF SAO Account**" custom metadata entry the "**TAF Account Assign Sugg Sales Rep FlwBI** custom metadata entry.)_
+
+---
+
 ## How to create a scratch org from this codebase using CumulusCI:
 
 1. Download a copy of this codebase to your computer.
@@ -71,10 +82,16 @@
         ```
     * Note that you shouldn't even need to open this URL in the same browser that's already logged into your scratch org -- theoretically, you could visit it from a totally different browser in incognito mode and it would work, because it's a _**publicly available**_ URL for an "API" included with this codebase.
         * In fact, please **validate** that this is the case!
+5. If you get stuck and need to delete your scratch org and start over, run the following CumulusCI command:
+    ```sh
+    cci org remove --org feature
+    ```
 
 ---
 
 ## Misc. notes:
+
+* Note that the two Apex classes under "`/force-app/40_dml_triggered_main/classes`" aren't even really used when you spin up a scratch org from this codebase.  They would be if "`Bypass_Execution__c`" in the custom metadata entry "**TAF Account Assign Sugg Sales Rep ApxBI**" weren't set to "`true`" -- but it is set to "`true`," because I want you to be impressed by the Flow, not the Apex.  These two classes are just artifacts of an earlier time when I wanted to validate that Mitch Spano's [Trigger Actions Framework](https://github.com/mitchspano/apex-trigger-actions-framework) package could delegate "trigger handling" to an Apex class or to an Autolaunched Flow with equal ease.
 * https://www.cloudwaale.com/post/how-to-create-public-rest-web-service-in-salesforce
 * https://salesforce.stackexchange.com/questions/378966/how-to-include-a-guest-user-license-profile-in-the-ci-for-a-digital-experience
 * https://github.com/pgonzaleznetwork/sfdx-community-deployment
