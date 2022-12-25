@@ -36,7 +36,6 @@ tasks:
     class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
     options:
       path: scripts/setup.cls
-      apex: enable_sales_rep_api_class_on_public_apis_profile();
 
 flows:
   config_dev:
