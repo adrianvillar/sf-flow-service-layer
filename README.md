@@ -5,11 +5,11 @@ See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-servi
 * The Autolaunched Flow labeled "**Sales Rep Suggester**," which lives in "`/force-app/00_shared_subflow_main`" in this codebase, is used by both:
     * The "[build your own API endpoint inside of Salesforce](https://katiekodes.com/introduction-salesforce-rest-apis/#1--build-your-own-endpoint-inside-salesforce)" API endpoint supported by the Apex class "**SalesRepAPI**," which lives in "`/force-app/20_rest_api_main`" in this codebase.
     * The record-triggered flow labeled "**Account Assign Sugg Sales Rep Flow (TAF)**," which lives in "`/force-app/40_dml_triggered_main`" in this codebase.
-        * _(Technically it's not a typical Salesforce record-triggered flow.  Technically it's also yet another Autolaunched Flow, and it's called by the "**AccountTrigger_TAF**" trigger and the "**TAF SAO Account**" custom metadata entry the "**TAF Account Assign Sugg Sales Rep FlwBI** custom metadata entry.)_
+        * _(Technically it's not a typical Salesforce record-triggered flow.  Technically it's also yet another Autolaunched Flow, and it's called by the "**AccountTrigger_TAF**" trigger and the "**TAF SOA Account**" custom metadata entry the "**TAF Account Assign Sugg Sales Rep FlwBI** custom metadata entry.)_
 
 **Project idea:**  Enhance this codebase by adding some extra users to the scratch org and making the "**Sales Rep Suggester**" Flow more complex about which countries go to which sales rep.  Edit some Account records and validate that your changes take effect _(that `OwnerId` gets assigned correctly)_.  You can do so by opening a scratch org based on this codebase and editing the Flow in your web browser, just like administering any other Salesforce org.
 
-**Project idea:**  Enhance this codebase by adding another Autolaunched Flow labeled "**Contact Assign Sugg Sales Rep Flow (TAF)**," being sure to also add a "**TAF SAO Contact**" custom metadata entry and a "**TAF Contact Assign Sugg Sales Rep FlwBI** custom metadata entry.  Don't forget you'll have to change the new Flow to work with a `MailingCountry` instead of a `BillingCountry`.  Edit some Contact records and validate that your changes take effect _(that `OwnerId` gets assigned correctly based on the logic in "**Sales Rep Suggester**")_.  You can do so by opening a scratch org based on this codebase and editing the Flow and Custom Metadata in your web browser, just like administering any other Salesforce org.
+**Project idea:**  Enhance this codebase by adding another Autolaunched Flow labeled "**Contact Assign Sugg Sales Rep Flow (TAF)**," being sure to also add a "**TAF SOA Contact**" custom metadata entry and a "**TAF Contact Assign Sugg Sales Rep FlwBI** custom metadata entry.  Don't forget you'll have to change the new Flow to work with a `MailingCountry` instead of a `BillingCountry`.  Edit some Contact records and validate that your changes take effect _(that `OwnerId` gets assigned correctly based on the logic in "**Sales Rep Suggester**")_.  You can do so by opening a scratch org based on this codebase and editing the Flow and Custom Metadata in your web browser, just like administering any other Salesforce org.
 
 ---
 
@@ -129,7 +129,7 @@ See the blog post "[Use Subflow EVERYWHERE](https://katiekodes.com/subflow-servi
         | ───── ────────────────────────────────────────────────────── ──────────────────────────────────────────────────────────────────────────────────────── 
         | Error Trigger_Action.TAF_Account_Assign_Sugg_Sales_Rep_ApxBI Custom metadata type Trigger_Action__mdt is not available in this organization.
         | Error Trigger_Action.TAF_Account_Assign_Sugg_Sales_Rep_FlwBI Custom metadata type Trigger_Action__mdt is not available in this organization.
-        | Error sObject_Trigger_Setting.tafsao_Account                 Custom metadata type sObject_Trigger_Setting__mdt is not available in this organization.
+        | Error sObject_Trigger_Setting.tafsoa_Account                 Custom metadata type sObject_Trigger_Setting__mdt is not available in this organization.
         ```
 5. Enable the scratch org to host public APIs with either of these SFDX commands _(just choose one)_:
     * Either this one _(after which you might need to wait a few minutes before the subsequent `force:apex:execute` command will run with correct output)_:
